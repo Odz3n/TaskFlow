@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace TaskFlow.Domain.Models;
 
-public class User : IdentityUser
+public class User : IdentityUser<Guid>
 {
     private const string DefaultAvatarUrl = "TO BE ADDED";
     public string FirstName { get; set; } = null!;
