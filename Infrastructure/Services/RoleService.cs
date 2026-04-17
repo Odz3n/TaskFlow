@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using TaskFlow.Application.DTOs.Auth;
-using TaskFlow.Application.Services;
+using TaskFlow.Application.Interfaces.Services;
 using TaskFlow.Domain.Models;
 
 

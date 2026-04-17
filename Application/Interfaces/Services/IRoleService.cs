@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using TaskFlow.Application.DTOs.Auth;
 
-namespace TaskFlow.Application.Services;
+namespace TaskFlow.Application.Interfaces.Services;
 
 public interface IRoleService
 {
