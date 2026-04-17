@@ -1,4 +1,4 @@
-namespace TaskFlow.Application.Services;
+namespace TaskFlow.Application.Interfaces.Services;
 
 public interface IProjectAuthorizationService
 {

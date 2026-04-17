@@ -1,4 +1,7 @@
-namespace TaskFlow.Application.Services;
+
+using TaskFlow.Application.Interfaces.Services;
+
+namespace TaskFlow.Infrastructure.Services;
 
 public class ProjectAuthorizationService : IProjectAuthorizationService
 {
