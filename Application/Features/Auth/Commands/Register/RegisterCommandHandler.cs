@@ -1,11 +1,10 @@
-using MediatR;
 using Microsoft.AspNetCore.Identity;
 using TaskFlow.Application.Common;
 using TaskFlow.Application.DTOs.Responses;
 using TaskFlow.Application.Interfaces.Messaging;
 using TaskFlow.Domain.Models;
 
-namespace TaskFlow.Application.Features.Auth.Commands;
+namespace TaskFlow.Application.Features.Auth.Commands.Register;
 
 public class RegisterCommandHandler : ICommandHandler<RegisterCommand, RegisterResponse>
 {
