@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TaskFlow.Application.Behaviors;
+using Scalar.AspNetCore;
 using TaskFlow.Domain.Models;
 using TaskFlow.Infrastructure.Data;
 
@@ -20,6 +21,8 @@ builder.Services.AddApiVersioning(options =>
     options.GroupNameFormat = "'v'VVV";
     options.SubstituteApiVersionInUrl = true;
 });
+
+builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -42,6 +45,18 @@ builder.Services.AddValidatorsFromAssemblyContaining<Program>(includeInternalTyp
 builder.Services.AddControllers();
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi(); 
+    app.MapScalarApiReference(options =>
+    {
+        options
+            .WithTitle("TaskFlow API")
+            .WithTheme(ScalarTheme.Moon)
+            .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
+    });
+}
 
 app.MapGet("/", () => "Hello World!");
 app.MapControllers();
