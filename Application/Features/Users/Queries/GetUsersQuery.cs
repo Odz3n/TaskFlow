@@ -2,7 +2,7 @@ using TaskFlow.Application.Common;
 using TaskFlow.Application.DTOs.Responses;
 using TaskFlow.Application.Interfaces.Messaging;
 
-namespace TaskFlow.Application.Features.Users;
+namespace TaskFlow.Application.Features.Users.Queries;
 
 public class GetUsersQuery : UserGetParameters, IQuery<PagedResult<GetUsersResponse>> 
 {
