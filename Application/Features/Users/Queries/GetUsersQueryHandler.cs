@@ -7,7 +7,7 @@ using TaskFlow.Application.Extensions;
 using TaskFlow.Application.Interfaces.Messaging;
 using TaskFlow.Domain.Models;
 
-namespace TaskFlow.Application.Features.Users;
+namespace TaskFlow.Application.Features.Users.Queries;
 
 public class GetUsersQueryHandler
     : IQueryHandler<GetUsersQuery, PagedResult<GetUsersResponse>>

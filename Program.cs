@@ -1,7 +1,10 @@
 using System.Reflection;
 using Asp.Versioning;
+using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using TaskFlow.Application.Behaviors;
 using Scalar.AspNetCore;
 using TaskFlow.Domain.Models;
 using TaskFlow.Infrastructure.Data;
@@ -34,6 +37,10 @@ builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
 });
+
+builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
+
+builder.Services.AddValidatorsFromAssemblyContaining<Program>(includeInternalTypes: true);
 
 builder.Services.AddControllers();
 
