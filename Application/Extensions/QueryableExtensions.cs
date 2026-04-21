@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using TaskFlow.Application.Common;
 
@@ -56,23 +57,22 @@ public static class QueryableExtensions
             return memberExpression.Member.Name;
         throw new ArgumentException("Invalid expression");
     }
-    // public static async Task<PagedResult<TDto>> ToPagedResultAsync<TEntity, TDto>(
-    //     this IQueryable<TEntity> query,
-    //     QueryParameters parameters,
-    //     IConfigurationProvider mapperConfig,
-    //     CancellationToken cancellationToken = default)
-    // {
-    //     var page = Math.Max(1, parameters.Page);
-    //     var pageSize = parameters.PageSize;
+    public static async Task<PagedResult<TDto>> ToPagedResultAsync<TEntity, TDto>(
+        this IQueryable<TEntity> query,
+        QueryParameters parameters,
+        CancellationToken cancellationToken = default)
+    {
+        var page = Math.Max(1, parameters.Page);
+        var pageSize = parameters.PageSize;
 
-    //     var totalCount = await query.CountAsync(cancellationToken);
+        var totalCount = await query.CountAsync(cancellationToken);
 
-    //     var items = await query
-    //         .Skip((page - 1) * pageSize)
-    //         .Take(pageSize)
-    //         .ProjectTo<TDto>(mapperConfig)
-    //         .ToListAsync(cancellationToken);
+        var items = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ProjectToType<TDto>()
+            .ToListAsync(cancellationToken);
 
-    //     return new PagedResult<TDto>(items, totalCount, page, pageSize);
-    // }
+        return new PagedResult<TDto>(items, totalCount, page, pageSize);
+    }
 }

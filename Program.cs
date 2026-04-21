@@ -8,6 +8,7 @@ using TaskFlow.Application.Behaviors;
 using Scalar.AspNetCore;
 using TaskFlow.Domain.Models;
 using TaskFlow.Infrastructure.Data;
+using Mapster;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +44,9 @@ builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipeli
 builder.Services.AddValidatorsFromAssemblyContaining<Program>(includeInternalTypes: true);
 
 builder.Services.AddControllers();
+
+builder.Services.AddMapster();
+TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
 
