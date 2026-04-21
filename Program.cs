@@ -8,6 +8,7 @@ using TaskFlow.Application.Behaviors;
 using Scalar.AspNetCore;
 using TaskFlow.Domain.Models;
 using TaskFlow.Infrastructure.Data;
+using Mapster;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +49,9 @@ builder.Services.AddControllers()
     {
         options.SuppressModelStateInvalidFilter = true;
     });
+
+builder.Services.AddMapster();
+TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
 
