@@ -1,7 +1,7 @@
 using TaskFlow.Application.DTOs.Responses;
 using TaskFlow.Application.Interfaces.Messaging;
 
-namespace TaskFlow.Application.Features.Auth.Commands;
+namespace TaskFlow.Application.Features.Auth.Commands.Register;
 
 public record RegisterCommand(
     string FirstName,

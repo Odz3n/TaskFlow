@@ -1,6 +1,6 @@
 using TaskFlow.Application.Interfaces.Messaging;
 
-namespace TaskFlow.Application.Features.Projects;
+namespace TaskFlow.Application.Features.Projects.Commands;
 
 public record CreateProjectCommand(
     string Name,

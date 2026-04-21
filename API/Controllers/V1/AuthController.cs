@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using TaskFlow.API.Abstractions;
 using TaskFlow.Application.DTOs.Auth;
 using TaskFlow.Application.Features.Auth.Commands;
+using TaskFlow.Application.Features.Auth.Commands.Register;
 
 namespace TaskFlow.API.Controllers.V1;
 
