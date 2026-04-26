@@ -9,8 +9,8 @@ public interface IProjectRepository
     IQueryable<Project> GetProjectsQueryable(CancellationToken cancellationToken);
     System.Threading.Tasks.Task<Project?> GetTrackedProjectByIdAsync(Guid? id, CancellationToken cancellationToken);
     System.Threading.Tasks.Task<Project?> GetUntrackedProjectByIdAsync(Guid? id, CancellationToken cancellationToken);
-    Task<List<Project>> GetUserProjectsAsync(Guid? userId, CancellationToken cancellationToken);
-    Task<List<Project>> GetOwnedProjectsAsync(Guid? ownerId, CancellationToken cancellationToken);
+    Task<IEnumerable<Project>> GetUserProjectsAsync(Guid? userId, CancellationToken cancellationToken);
+    Task<IEnumerable<Project>> GetOwnedProjectsAsync(Guid? ownerId, CancellationToken cancellationToken);
 
     System.Threading.Tasks.Task UpdateProjectAsync(Project project, CancellationToken cancellationToken);
 

@@ -9,6 +9,15 @@ using Scalar.AspNetCore;
 using TaskFlow.Domain.Models;
 using TaskFlow.Infrastructure.Data;
 using Mapster;
+using TaskFlow.Application.Interfaces.Repositories;
+using TaskFlow.Infrastructure.Repositories;
+using TaskFlow.Domain.Services;
+using TaskFlow.Infrastructure.Services;
+using TaskFlow.Infrastructure.Settings;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,9 +47,38 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>()
 builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+    cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
 });
 
-builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
+var jwtSettings = builder.Configuration
+    .GetSection("JwtSettings")
+    .Get<JwtSettings>()!;
+builder.Services.AddSingleton(jwtSettings);
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings.Issuer,
+        ValidAudience = jwtSettings.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
+    };
+});
+
+builder.Services.AddScoped<JwtTokenService>();
+builder.Services.AddScoped<IAttachmentRepository, AttachmentRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<IMemberRepository, MemberRepository>();
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+builder.Services.AddScoped<IProjectPermissionService, ProjectPermissionService>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<Program>(includeInternalTypes: true);
 
@@ -57,7 +95,7 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi(); 
+    app.MapOpenApi();
     app.MapScalarApiReference(options =>
     {
         options
@@ -68,6 +106,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapGet("/", () => "Hello World!");
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();

@@ -9,10 +9,11 @@ namespace TaskFlow.API.Controllers.V1;
 [ApiVersion(1.0)]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiController]
+[Produces("application/json")]
 public class RolesController : ApiController
 {
     private readonly ISender _sender;
-    public RolesController(ISender sender) 
+    public RolesController(ISender sender)
         : base(sender)
     {
         _sender = sender;

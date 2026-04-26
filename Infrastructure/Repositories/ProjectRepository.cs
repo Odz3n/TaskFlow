@@ -19,12 +19,12 @@ public class ProjectRepository : IProjectRepository
         await _db.Projects.AddAsync(project, cancellationToken);
     }
 
-    public async Task<List<Project>> GetOwnedProjectsAsync(Guid? ownerId, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Project>> GetOwnedProjectsAsync(Guid? ownerId, CancellationToken cancellationToken)
     {
         if (ownerId == null)
             return new List<Project>();
 
-        return await GetProjectWithIncludes(true)
+        return await GetProjectsWithIncludes(asNoTracking: true)
             .Where(p => p.Members.Any(m => m.UserId == ownerId && m.Role == ProjectRole.Owner))
             .ToListAsync(cancellationToken);
     }
@@ -48,7 +48,7 @@ public class ProjectRepository : IProjectRepository
         if (id == null)
             return null;
 
-        return await GetProjectWithIncludes()
+        return await GetProjectsWithIncludes(asNoTracking: false)
             .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
 
@@ -57,11 +57,11 @@ public class ProjectRepository : IProjectRepository
         if (id == null)
             return null;
 
-        return await GetProjectWithIncludes(true)
+        return await GetProjectsWithIncludes(asNoTracking: true)
             .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
 
-    public async Task<List<Project>> GetUserProjectsAsync(Guid? userId, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Project>> GetUserProjectsAsync(Guid? userId, CancellationToken cancellationToken)
     {
         if (userId == null)
             return new List<Project>();
@@ -107,7 +107,8 @@ public class ProjectRepository : IProjectRepository
     {
         await _db.SaveChangesAsync(cancellationToken);
     }
-    private IQueryable<Project> GetProjectWithIncludes(bool asNoTracking = false)
+    private IQueryable<Project> GetProjectsWithIncludes(
+        bool asNoTracking = false)
     {
         var query = _db.Projects
             .Include(p => p.Members)
@@ -122,18 +123,18 @@ public class ProjectRepository : IProjectRepository
                 .ThenInclude(m => m.Attachments)
             .Include(p => p.Tasks)
                 .ThenInclude(t => t.AssigneeMember)
-                    .ThenInclude(am => am.User)
+                    .ThenInclude(am => am != null ? am.User : null!)
             .Include(p => p.Tasks)
                 .ThenInclude(t => t.CreatorMember)
-                    .ThenInclude(cm => cm.User)
+                    .ThenInclude(cm => cm != null ? cm.User : null!)
             .Include(p => p.Tasks)
                 .ThenInclude(t => t.Comments)
                     .ThenInclude(c => c.Member)
-                        .ThenInclude(m => m.User)
+                        .ThenInclude(m => m != null ? m.User : null!)
             .Include(p => p.Tasks)
                 .ThenInclude(t => t.Attachments)
                     .ThenInclude(a => a.Member)
-                        .ThenInclude(um => um.User);
+                        .ThenInclude(um => um != null ? um.User : null!);
 
         return asNoTracking ? query.AsNoTracking() : query;
     }

@@ -12,4 +12,8 @@ public class User : IdentityUser<Guid>
     public string EffectiveAvatarUrl => AvatarUrl ?? DefaultAvatarUrl;
 
     public ICollection<Member> Memberships { get; set; } = new List<Member>();
+    public Guid GetUserId()
+    {
+        return Id;
+    }
 }
