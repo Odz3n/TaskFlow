@@ -1,3 +1,4 @@
+using Mapster;
 using Microsoft.AspNetCore.Identity;
 using TaskFlow.Application.Common;
 using TaskFlow.Application.DTOs.Responses;
@@ -48,9 +49,7 @@ public class RegisterCommandHandler : ICommandHandler<RegisterCommand, RegisterR
 
         await _userManager.AddToRoleAsync(user, "User");
 
-        var response = new RegisterResponse(
-            Message: $"User {user.Email} successfully registered"
-        );
+        var response = user.Adapt<RegisterResponse>();
 
         return Result<RegisterResponse>.Success(response);
     }
