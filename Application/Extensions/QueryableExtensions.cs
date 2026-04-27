@@ -31,31 +31,12 @@ public static class QueryableExtensions
         if (!sortMapping.TryGetValue(parameters.SortBy.ToLowerInvariant(), out var sortExpression))
             return query;
 
-        var isDescending = parameters.SortOrder.ToLowerInvariant() == "desc";
+        var isDescending = !string.IsNullOrWhiteSpace(parameters.SortOrder) &&
+                       parameters.SortOrder.ToLowerInvariant() == "desc";
 
         return isDescending
             ? query.OrderByDescending(sortExpression)
             : query.OrderBy(sortExpression);
-    }
-    public static IQueryable<T> ApplySearch<T>(
-        this IQueryable<T> query,
-        string? searchTerm,
-        params Expression<Func<T, string?>>[] searchProperties)
-    {
-        if (string.IsNullOrWhiteSpace(searchTerm))
-            return query;
-
-        var searchLower = searchTerm.ToLowerInvariant();
-
-        return query
-            .Where(item => searchProperties.Any(property =>
-                EF.Property<string>(item, GetPropertyName(property)).ToLowerInvariant().Contains(searchLower)));
-    }
-    private static string GetPropertyName<T, TProperty>(Expression<Func<T, TProperty>> expression)
-    {
-        if (expression.Body is MemberExpression memberExpression)
-            return memberExpression.Member.Name;
-        throw new ArgumentException("Invalid expression");
     }
     public static async Task<PagedResult<TDto>> ToPagedResultAsync<TEntity, TDto>(
         this IQueryable<TEntity> query,

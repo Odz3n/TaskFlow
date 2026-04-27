@@ -21,7 +21,7 @@ public class UsersController : ApiController
     [HttpGet]
     [Consumes("multipart/form-data")]
     public async Task<ActionResult<IEnumerable<User>>> GetUsers(
-        [FromForm] GetUsersQuery query,
+        [FromQuery] GetUsersQuery query,
         CancellationToken cancellationToken)
     {
         var result = await Sender.Send(query, cancellationToken);

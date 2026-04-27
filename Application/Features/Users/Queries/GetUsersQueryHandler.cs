@@ -2,7 +2,6 @@ using System.Linq.Expressions;
 using Microsoft.AspNetCore.Identity;
 using TaskFlow.Application.Common;
 using TaskFlow.Application.DTOs.Responses;
-using TaskFlow.Application.DTOs.User;
 using TaskFlow.Application.Extensions;
 using TaskFlow.Application.Interfaces.Messaging;
 using TaskFlow.Domain.Models;
@@ -27,14 +26,13 @@ public class GetUsersQueryHandler
             ["email"] = u => u.Email ?? ""
         };
 
-        var result = _userManager.Users
-            .ApplySearch(request.SearchTerm,
-                u => u.UserName,
-                u => u.FirstName,
-                u => u.LastName,
-                u => u.Email)
-            .ApplySort(request, sortMapping);
+        var result = await _userManager.Users
+            .ApplyUserSearch(request.Parameters)
+            .ApplySort(request.Parameters, sortMapping)
+            .ToPagedResultAsync<User, GetUsersResponse>(request.Parameters, cancellationToken);
 
-        throw new NotImplementedException();
+        return Result<PagedResult<GetUsersResponse>>.Success(result);
+
+
     }
 }

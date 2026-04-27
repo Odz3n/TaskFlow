@@ -1,10 +1,10 @@
 using TaskFlow.Application.Common;
 using TaskFlow.Application.DTOs.Responses;
+using TaskFlow.Application.DTOs.User;
 using TaskFlow.Application.Interfaces.Messaging;
 
 namespace TaskFlow.Application.Features.Users.Queries;
 
-public class GetUsersQuery : UserGetParameters, IQuery<PagedResult<GetUsersResponse>> 
-{
-    public bool IsValid => Page > 0 && PageSize > 0 && PageSize <= 100;
-}
+public record GetUsersQuery(
+    UserGetParameters Parameters
+) : IQuery<PagedResult<GetUsersResponse>>;

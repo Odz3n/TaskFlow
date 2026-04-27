@@ -1,13 +1,16 @@
 using Asp.Versioning;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskFlow.API.Abstractions;
 using TaskFlow.Application.DTOs.Requests;
 using TaskFlow.Application.Features.Projects;
 using TaskFlow.Application.Features.Projects.Commands;
+using TaskFlow.Application.Features.Projects.Queries;
 
 namespace MyApp.Namespace
 {
+    [Authorize]
     [ApiVersion(1.0)]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
@@ -23,9 +26,15 @@ namespace MyApp.Namespace
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProjects()
+        public async Task<IActionResult> GetProjects(
+            [FromQuery] GetProjectsQuery query,
+            CancellationToken cancellationToken
+        )
         {
-            return Ok(123);
+            var result = await _sender.Send(query, cancellationToken);
+            if (result.IsFailure)
+                return HandleFailure(result);
+            return Ok(result.Data);
         }
 
         [HttpPost]

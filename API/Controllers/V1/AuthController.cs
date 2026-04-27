@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using TaskFlow.API.Abstractions;
 using TaskFlow.Application.DTOs.Auth;
 using TaskFlow.Application.Features.Auth.Commands;
+using TaskFlow.Application.Features.Auth.Commands.Login;
 using TaskFlow.Application.Features.Auth.Commands.Register;
 
 namespace TaskFlow.API.Controllers.V1;
@@ -40,6 +41,17 @@ public class AuthController : ApiController
         if (result.IsFailure)
             return HandleFailure(result);
             
+        return Ok(result.Data);
+    }
+    [HttpPost("login")]
+    public async Task<IActionResult> LoginAsync(
+        LoginCommand command,
+        CancellationToken cancellationToken
+    )
+    {
+        var result = await _sender.Send(command, cancellationToken);
+        if (result.IsFailure)
+            return HandleFailure(result);
         return Ok(result.Data);
     }
 }

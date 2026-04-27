@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskFlow.API.Abstractions;
 using TaskFlow.Application.Features.Members.Queries;
-using TaskFlow.Domain.Enums;
+using TaskFlow.Application.Features.Members.Commands;
 
 namespace TaskFlow.API.Controllers.V1;
 
@@ -23,12 +23,10 @@ public class ProjectMembersController : ApiController
     }
     [HttpGet("{memberId}/deletion-preview")]
     public async Task<IActionResult> GetDeletionPreview(
-        Guid projectId,
-        Guid memberId,
+        [FromQuery]GetMemberDeletionPreviewQuery query,
         CancellationToken cancellationToken
     )
     {
-        var query = new GetMemberDeletionPreviewQuery(projectId, memberId);
         var result = await _sender.Send(query, cancellationToken);
         if (result.IsFailure)
             return HandleFailure(result);
@@ -49,12 +47,13 @@ public class ProjectMembersController : ApiController
     }
     [HttpDelete("{memberId}")]
     public async Task<IActionResult> RemoveMember(
-        Guid projectId,
-        Guid memberId,
-        [FromQuery] MemberDeletionStrategy strategy,
+        RemoveMemberCommand command,
         CancellationToken cancellationToken
     )
     {
-        return Ok();
+        var result = await _sender.Send(command, cancellationToken);
+        if (result.IsFailure)
+            return HandleFailure(result);
+        return Ok(result);
     }
 }

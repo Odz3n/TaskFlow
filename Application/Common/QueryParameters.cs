@@ -15,5 +15,4 @@ public abstract class QueryParameters
     
     public string? SortBy { get; set; }
     public string? SortOrder { get; set; }
-    public string? SearchTerm { get; set; }
 }
