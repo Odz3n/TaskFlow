@@ -17,19 +17,26 @@ public sealed class BearerSecuritySchemeTransformer : IOpenApiDocumentTransforme
         };
 
         document.Components ??= new OpenApiComponents();
-        document.Components.SecuritySchemes.Add("Bearer", securityScheme);
-
-        foreach (var path in document.Paths.Values)
+        document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
+        if (!document.Components.SecuritySchemes.ContainsKey("Bearer"))
         {
-            if (path.Operations == null) continue;
+            document.Components.SecuritySchemes.Add("Bearer", securityScheme);
+        }
 
-            foreach (var operation in path.Operations.Values)
+        if (document.Paths != null) 
+        {
+            foreach (var path in document.Paths.Values)
             {
-                operation.Security ??= new List<OpenApiSecurityRequirement>();
-                operation.Security.Add(new OpenApiSecurityRequirement
+                if (path.Operations == null) continue;
+
+                foreach (var operation in path.Operations.Values)
                 {
-                    [new OpenApiSecuritySchemeReference("Bearer", document)] = new List<string>()
-                });
+                    operation.Security ??= new List<OpenApiSecurityRequirement>();
+                    operation.Security.Add(new OpenApiSecurityRequirement
+                    {
+                        [new OpenApiSecuritySchemeReference("Bearer", document)] = new List<string>()
+                    });
+                }
             }
         }
 

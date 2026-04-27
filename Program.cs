@@ -17,7 +17,6 @@ using TaskFlow.Infrastructure.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.OpenApi;
 using TaskFlow.Infrastructure.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,7 +32,7 @@ builder.Services.AddApiVersioning(options =>
     options.SubstituteApiVersionInUrl = true;
 });
 
-builder.Services.AddOpenApi(options =>
+builder.Services.AddOpenApi("v1", options =>
 {
     options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
 });
@@ -105,8 +104,8 @@ if (app.Environment.IsDevelopment())
         options
             .WithTitle("TaskFlow API")
             .WithTheme(ScalarTheme.Moon)
-            .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
-
+            .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)
+            .WithOpenApiRoutePattern("/openapi/{documentName}.json");
         options.Authentication = new ScalarAuthenticationOptions
         {
             PreferredSecuritySchemes = new[] { "Bearer" }
