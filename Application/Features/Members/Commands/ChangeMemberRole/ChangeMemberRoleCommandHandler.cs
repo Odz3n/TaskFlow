@@ -1,3 +1,4 @@
+using Mapster;
 using TaskFlow.Application.Common;
 using TaskFlow.Application.DTOs.Member;
 using TaskFlow.Application.DTOs.Project;
@@ -47,21 +48,7 @@ public class ChangeMemberRoleCommandHandler : ICommandHandler<ChangeMemberRoleCo
 
         await _memberRepository.SaveChangesAsync(cancellationToken);
 
-        // Mapper Member => MemberDto
-        var dto = new MemberDto(
-            Id: member.Id,
-            User: new UserDto(
-                member.User.UserName,
-                member.User.AvatarUrl),
-            Project: new ProjectDto(
-                member.ProjectId,
-                member.Project.Name,
-                member.Project.Description,
-                member.Project.CreatedDate,
-                member.Project.IsArchived),
-            Role: member.Role,
-            JoinedDate: member.JoinedDate,
-            IsActive: member.IsActive);
+        var dto = member.Adapt<MemberDto>();
 
         return Result<MemberDto>.Success(dto);
     }
