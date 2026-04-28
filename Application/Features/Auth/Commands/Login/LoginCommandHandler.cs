@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using TaskFlow.Application.Common;
 using TaskFlow.Application.DTOs.Auth;
 using TaskFlow.Application.Interfaces.Messaging;
+using TaskFlow.Application.Interfaces.Services;
 using TaskFlow.Domain.Models;
 using TaskFlow.Infrastructure.Services;
 
@@ -10,14 +11,14 @@ namespace TaskFlow.Application.Features.Auth.Commands.Login;
 
 public class LoginCommandHandler : ICommandHandler<LoginCommand, LoginResponse>
 {
-    private readonly JwtTokenService _jwtTokenService;
+    private readonly ITokenService _tokenService;
     private readonly UserManager<User> _userManager;
     public LoginCommandHandler(
-        JwtTokenService jwtTokenService,
+        ITokenService tokenService,
         UserManager<User> userManager
     )
     {
-        _jwtTokenService = jwtTokenService;
+        _tokenService = tokenService;
         _userManager = userManager;
     }
     public async Task<Result<LoginResponse>> Handle(
@@ -34,7 +35,7 @@ public class LoginCommandHandler : ICommandHandler<LoginCommand, LoginResponse>
 
         var roles = await _userManager.GetRolesAsync(user);
 
-        var token = _jwtTokenService.GenerateToken(user, roles);
+        var token = _tokenService.GenerateToken(user, roles);
 
         var response = new LoginResponse(
             AccessToken: token,
