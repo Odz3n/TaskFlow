@@ -10,6 +10,9 @@ using TaskFlow.Application.Features.Comments.Queries;
 
 namespace TaskFlow.API.Controllers.V1;
 
+/// <summary>
+/// Controller for managing comments on tasks.
+/// </summary>
 [Authorize]
 [ApiVersion(1.0)]
 [Route("api/v{version:apiVersion}")]
@@ -24,6 +27,13 @@ public class CommentsController : ApiController
         _sender = sender;
     }
 
+    /// <summary>
+    /// Retrieves a paged list of comments for a specific task.
+    /// </summary>
+    /// <param name="taskId">The unique identifier of the task.</param>
+    /// <param name="parameters">Paging and sorting parameters.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>A paged list of comments.</returns>
     [HttpGet("tasks/{taskId}/comments")]
     public async Task<IActionResult> GetTaskComments(
         Guid taskId,
@@ -39,6 +49,13 @@ public class CommentsController : ApiController
         return Ok(result.Data);
     }
 
+    /// <summary>
+    /// Adds a new comment to a task, with an optional file attachment.
+    /// </summary>
+    /// <param name="taskId">The unique identifier of the task.</param>
+    /// <param name="request">The comment data (text and optional file).</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>The created comment details.</returns>
     [HttpPost("tasks/{taskId}/comments")]
     public async Task<IActionResult> CreateComment(
         Guid taskId,
@@ -60,6 +77,13 @@ public class CommentsController : ApiController
         return Ok(result.Data);
     }
 
+    /// <summary>
+    /// Updates an existing comment's text. Only the author can perform this action.
+    /// </summary>
+    /// <param name="id">The unique identifier of the comment.</param>
+    /// <param name="request">The updated comment text.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>The updated comment details.</returns>
     [HttpPut("comments/{id}")]
     public async Task<IActionResult> UpdateComment(
         Guid id,
@@ -80,6 +104,12 @@ public class CommentsController : ApiController
         return Ok(result.Data);
     }
 
+    /// <summary>
+    /// Deletes a comment. Authorized for the author, project owner, or admin.
+    /// </summary>
+    /// <param name="id">The unique identifier of the comment to delete.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>No content on success.</returns>
     [HttpDelete("comments/{id}")]
     public async Task<IActionResult> DeleteComment(
         Guid id,
