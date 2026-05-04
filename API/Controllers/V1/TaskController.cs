@@ -11,7 +11,7 @@ using TaskFlow.Application.Features.Tasks.Queries;
 namespace TaskFlow.API.Controllers.V1;
 
 /// <summary>
-/// Controller for managing tasks within projects.
+/// Provides endpoints for managing tasks within a specific project.
 /// </summary>
 [Authorize]
 [ApiVersion(1.0)]
@@ -21,18 +21,27 @@ namespace TaskFlow.API.Controllers.V1;
 public class TaskController : ApiController
 {
     private readonly ISender _sender;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TaskController"/> class.
+    /// </summary>
+    /// <param name="sender">Mediator sender used to dispatch commands and queries.</param>
     public TaskController(ISender sender)
         : base(sender)
     {
         _sender = sender;
     }
+
     /// <summary>
-    /// Creates a new task in a project.
+    /// Creates a new task within the specified project.
     /// </summary>
     /// <param name="projectId">The unique identifier of the project.</param>
-    /// <param name="request">The task creation request data.</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>The created task details.</returns>
+    /// <param name="request">The data required to create a task.</param>
+    /// <param name="cancellationToken">Token to cancel the request.</param>
+    /// <returns>The created task.</returns>
+    /// <response code="200">Task was successfully created.</response>
+    /// <response code="400">Invalid request data.</response>
+    /// <response code="401">Unauthorized.</response>
     [HttpPost]
     public async Task<IActionResult> CreateTask(
         Guid projectId,
@@ -53,16 +62,21 @@ public class TaskController : ApiController
         var result = await _sender.Send(command, cancellationToken);
         if (result.IsFailure)
             return HandleFailure(result);
+
         return Ok(result.Data);
     }
 
     /// <summary>
-    /// Deletes a task from a project by its ID.
+    /// Deletes a task by its identifier from the specified project.
     /// </summary>
     /// <param name="projectId">The unique identifier of the project.</param>
-    /// <param name="taskId">The unique identifier of the task to delete.</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>The result of the deletion.</returns>
+    /// <param name="taskId">The unique identifier of the task.</param>
+    /// <param name="cancellationToken">Token to cancel the request.</param>
+    /// <returns>The result of the deletion operation.</returns>
+    /// <response code="200">Task was successfully deleted.</response>
+    /// <response code="400">Deletion failed.</response>
+    /// <response code="401">Unauthorized.</response>
+    /// <response code="404">Task not found.</response>
     [HttpDelete("{taskId:Guid}")]
     public async Task<IActionResult> DeleteById(
         Guid projectId,
@@ -79,15 +93,21 @@ public class TaskController : ApiController
         var result = await _sender.Send(command, cancellationToken);
         if (result.IsFailure)
             return HandleFailure(result);
+
         return Ok(result.Data);
     }
+
     /// <summary>
-    /// Retrieves a specific task by its ID within a project.
+    /// Retrieves a specific task by its identifier within a project.
     /// </summary>
     /// <param name="taskId">The unique identifier of the task.</param>
     /// <param name="projectId">The unique identifier of the project.</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>The task details if found.</returns>
+    /// <param name="cancellationToken">Token to cancel the request.</param>
+    /// <returns>The requested task.</returns>
+    /// <response code="200">Task was found and returned.</response>
+    /// <response code="400">Invalid request.</response>
+    /// <response code="401">Unauthorized.</response>
+    /// <response code="404">Task not found.</response>
     [HttpGet("{taskId:Guid}")]
     public async Task<IActionResult> GetTaskById(
         Guid taskId,
@@ -103,15 +123,20 @@ public class TaskController : ApiController
         var result = await _sender.Send(query, cancellationToken);
         if (result.IsFailure)
             return HandleFailure(result);
+
         return Ok(result.Data);
     }
+
     /// <summary>
-    /// Retrieves a paged list of tasks for a project based on query parameters.
+    /// Retrieves a paginated and filtered list of tasks for the specified project.
     /// </summary>
     /// <param name="projectId">The unique identifier of the project.</param>
-    /// <param name="parameters">The search and paging parameters.</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>A paged list of tasks.</returns>
+    /// <param name="parameters">Filtering, sorting, and paging parameters.</param>
+    /// <param name="cancellationToken">Token to cancel the request.</param>
+    /// <returns>A collection of tasks matching the specified criteria.</returns>
+    /// <response code="200">Tasks retrieved successfully.</response>
+    /// <response code="400">Invalid query parameters.</response>
+    /// <response code="401">Unauthorized.</response>
     [HttpGet]
     public async Task<IActionResult> GetTasksByParameters(
         Guid projectId,
@@ -122,19 +147,26 @@ public class TaskController : ApiController
         var query = new GetTasksByQueryParametersQuery(
             ProjectId: projectId,
             Parameters: parameters);
+
         var result = await _sender.Send(query, cancellationToken);
         if (result.IsFailure)
             return HandleFailure(result);
+
         return Ok(result.Data);
     }
+
     /// <summary>
-    /// Updates an existing task's information.
+    /// Updates all properties of an existing task.
     /// </summary>
     /// <param name="projectId">The unique identifier of the project.</param>
-    /// <param name="taskId">The unique identifier of the task to update.</param>
-    /// <param name="request">The task update data.</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>The updated task details.</returns>
+    /// <param name="taskId">The unique identifier of the task.</param>
+    /// <param name="request">The updated task data.</param>
+    /// <param name="cancellationToken">Token to cancel the request.</param>
+    /// <returns>The updated task.</returns>
+    /// <response code="200">Task updated successfully.</response>
+    /// <response code="400">Invalid update data.</response>
+    /// <response code="401">Unauthorized.</response>
+    /// <response code="404">Task not found.</response>
     [HttpPut("{taskId:guid}")]
     public async Task<IActionResult> Update(
         Guid projectId,
@@ -153,19 +185,26 @@ public class TaskController : ApiController
             Status: request.Status,
             Priority: request.Priority,
             DueDate: request.DueDate);
+
         var result = await _sender.Send(command, cancellationToken);
         if (result.IsFailure)
             return HandleFailure(result);
+
         return Ok(result.Data);
     }
+
     /// <summary>
-    /// Partially updates a task (e.g., changes its status).
+    /// Partially updates a task (for example, changing its status).
     /// </summary>
     /// <param name="projectId">The unique identifier of the project.</param>
     /// <param name="taskId">The unique identifier of the task.</param>
-    /// <param name="request">The partial update data (e.g., Status).</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>The updated task details.</returns>
+    /// <param name="request">The partial update data.</param>
+    /// <param name="cancellationToken">Token to cancel the request.</param>
+    /// <returns>The updated task.</returns>
+    /// <response code="200">Task updated successfully.</response>
+    /// <response code="400">Invalid update data.</response>
+    /// <response code="401">Unauthorized.</response>
+    /// <response code="404">Task not found.</response>
     [HttpPatch("{taskId:guid}/status")]
     public async Task<IActionResult> UpdateStatus(
         Guid projectId,
@@ -183,6 +222,7 @@ public class TaskController : ApiController
         var result = await _sender.Send(command, cancellationToken);
         if (result.IsFailure)
             return HandleFailure(result);
+
         return Ok(result.Data);
     }
 }
