@@ -40,14 +40,14 @@ public class CreateTaskCommandHandler
 
         var member = project.Members.FirstOrDefault(m => m.UserId == request.InitiatorId);
         if (member == null)
-            return Result<TaskDto>.Failure(new Error("Member.NotFound", $"User '{request.InitiatorId}' is not a member of this project"));
+            return Result<TaskDto>.Failure(new Error("Member.NotFound", $"Member '{request.InitiatorId}' is not a member of this project"));
 
         var assigneeMember = project.Members.FirstOrDefault(m => m.Id == request.AssigneeMemberId);
         if (assigneeMember == null)
-            return Result<TaskDto>.Failure(new Error("Member.NotFound", $"User '{request.AssigneeMemberId}' is not a member of this project"));
+            return Result<TaskDto>.Failure(new Error("Member.NotFound", $"Member '{request.AssigneeMemberId}' is not a member of this project"));
 
         if (!_permissionService.CanCreateTask(project, request.InitiatorId))
-            return Result<TaskDto>.Failure(new Error("User.InsufficientPermissions", "User cannot create tasks"));
+            return Result<TaskDto>.Failure(new Error("Member.InsufficientPermissions", "User cannot create tasks"));
 
         var task = new Domain.Models.Task
         {

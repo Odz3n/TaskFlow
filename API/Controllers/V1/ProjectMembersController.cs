@@ -22,7 +22,7 @@ public class ProjectMembersController : ApiController
     {
         _sender = sender;
     }
-    [HttpGet("{memberId}/deletion-preview")]
+    [HttpGet("{memberId:guid}/deletion-preview")]
     public async Task<IActionResult> GetDeletionPreview(
         [FromQuery]GetMemberDeletionPreviewQuery query,
         CancellationToken cancellationToken
@@ -46,7 +46,7 @@ public class ProjectMembersController : ApiController
         }
         return Ok(new { preview = result.Data });
     }
-    [HttpDelete("{memberId}")]
+    [HttpDelete("{memberId:guid}")]
     public async Task<IActionResult> RemoveMember(
         RemoveMemberCommand command,
         CancellationToken cancellationToken

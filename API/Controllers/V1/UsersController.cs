@@ -13,9 +13,11 @@ namespace MyApp.Namespace;
 [Produces("application/json")]
 public class UsersController : ApiController
 {
+    private readonly ISender _sender;
     public UsersController(ISender sender)
         : base(sender)
     {
+        _sender = sender;
     }
 
     [HttpGet]

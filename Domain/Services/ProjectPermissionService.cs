@@ -100,7 +100,7 @@ public class ProjectPermissionService : IProjectPermissionService
 
     public bool CanAddComment(Project project, Guid? initiatorId)
     {
-  
+
         return GetUserRole(project, initiatorId) != null;
     }
 
@@ -120,5 +120,58 @@ public class ProjectPermissionService : IProjectPermissionService
 
         var member = project.Members.FirstOrDefault(m => m.UserId == initiatorId);
         return member != null && comment.MemberId == member.Id;
+    }
+
+    public bool CanUpdateTask(Project project, Guid? initiatorId, Models.Task task)
+    {
+        var initiatorRole = GetUserRole(project, initiatorId);
+        if (initiatorRole == null)
+            return false;
+
+        if (initiatorRole == ProjectRole.Owner ||
+            initiatorRole == ProjectRole.Admin)
+            return true;
+
+        if (initiatorRole == ProjectRole.Member)
+        {
+            var member = project.Members.FirstOrDefault(m => m.UserId == initiatorId);
+            return member != null && task.CreatorMemberId == member.Id;
+        }
+
+        return false;
+    }
+
+    public bool CanUpdateAttachment(Project project, Guid? initiatorId, Attachment attachment)
+    {
+        var initiatorRole = GetUserRole(project, initiatorId);
+        if (initiatorRole == null)
+            return false;
+
+        if (initiatorRole == ProjectRole.Owner ||
+            initiatorRole == ProjectRole.Admin ||
+            initiatorRole == ProjectRole.Member)
+        {
+            var member = project.Members.FirstOrDefault(m => m.UserId == initiatorId);
+            return member != null && attachment.MemberId == member.Id;
+        }
+        return false;
+    }
+
+    public bool CanDeleteAttachment(Project project, Guid? initiatorId, Attachment attachment)
+    {
+        var initiatorRole = GetUserRole(project, initiatorId);
+        if (initiatorRole == null)
+            return false;
+
+        if (initiatorRole == ProjectRole.Owner ||
+            initiatorRole == ProjectRole.Admin)
+            return true;
+
+        if (initiatorRole == ProjectRole.Member)
+        {
+            var member = project.Members.FirstOrDefault(m => m.UserId == initiatorId);
+            return member != null && attachment.MemberId == member.Id;
+        }
+        return false;
     }
 }

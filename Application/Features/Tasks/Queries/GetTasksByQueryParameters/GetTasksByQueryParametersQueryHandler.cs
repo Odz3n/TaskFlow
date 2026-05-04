@@ -32,6 +32,7 @@ public class GetTasksByQueryParametersQueryHandler
 
         var result = await _taskRepository
             .GetTasksQueryable(cancellationToken)
+            .Where(t => t.ProjectId == request.ProjectId)
             .ApplyTaskSearch(request.Parameters)
             .ApplySort(request.Parameters, sortingMap)
             .ToPagedResultAsync<Domain.Models.Task, TaskDto>(request.Parameters, cancellationToken);
