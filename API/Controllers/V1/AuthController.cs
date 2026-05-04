@@ -22,8 +22,9 @@ public class AuthController : ApiController
         _sender = sender;
     }
     [HttpPost("register")]
+    [Consumes("multipart/form-data")]
     public async Task<IActionResult> RegisterAsync(
-        [FromBody] RegisterUserRequest request,
+        [FromForm] RegisterUserRequest request,
         CancellationToken token
     )
     {
@@ -34,7 +35,7 @@ public class AuthController : ApiController
             Email: request.Email,
             Password: request.Password,
             ConfirmPassword: request.ConfirmPassword,
-            AvatarUrl: request.AvatarUrl
+            Avatar: request.Avatar
         );
 
         var result = await _sender.Send(command, token);

@@ -19,5 +19,5 @@ public class RegisterUserRequest
     [Required]
     [Compare("Password")]
     public string ConfirmPassword { get; set; } = null!;
-    public string? AvatarUrl { get; set; }
+    public IFormFile? Avatar {get; set;}
 }

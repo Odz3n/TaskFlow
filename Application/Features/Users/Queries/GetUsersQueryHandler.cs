@@ -32,7 +32,5 @@ public class GetUsersQueryHandler
             .ToPagedResultAsync<User, GetUsersResponse>(request.Parameters, cancellationToken);
 
         return Result<PagedResult<GetUsersResponse>>.Success(result);
-
-
     }
 }

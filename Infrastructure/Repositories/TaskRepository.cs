@@ -89,8 +89,8 @@ public class TaskRepository : ITaskRepository
     }
     private IQueryable<Domain.Models.Task> GetTasksWithIncludes(
         bool asNoTracking = false,
-        bool includeComments = false,
-        bool includeAttachments = false)
+        bool includeComments = true,
+        bool includeAttachments = true)
     {
         var query = _db.Tasks
             .Include(t => t.Project)

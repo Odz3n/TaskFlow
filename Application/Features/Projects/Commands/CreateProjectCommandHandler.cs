@@ -23,15 +23,9 @@ public class CreateProjectCommandHandler : ICommandHandler<CreateProjectCommand>
 
     public async Task<Result> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
     {
-        if (request.InitiatorId == null)
-            return Result.Failure(new Error("User.Unauthorized", "User not authenticated"));
-
-        if (!request.InitiatorRoles.Contains("User") && !request.InitiatorRoles.Contains("Admin"))
-            return Result.Failure(new Error("User.InsufficientPermissions", "User cannot create projects"));
-
         var initiator = await _userManager.FindByIdAsync(request.InitiatorId.ToString() ?? Guid.Empty.ToString());
         if (initiator == null)
-            return Result.Failure(new Error("User.NotFound", $"User {request.InitiatorId} not found"));
+            return Result.Failure(new Error("User.NotFound", $"User with ID '{request.InitiatorId}' not found"));
 
         var project = new Project
         {

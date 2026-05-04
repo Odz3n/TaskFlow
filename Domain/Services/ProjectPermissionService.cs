@@ -24,6 +24,41 @@ public class ProjectPermissionService : IProjectPermissionService
         return false;
     }
 
+    public bool CanCreateTask(Project project, Guid? initiatorId)
+    {
+        var initiatorRole = GetUserRole(project, initiatorId);
+        if (initiatorRole == null)
+            return false;
+            
+        return initiatorRole == ProjectRole.Member ||
+            initiatorRole == ProjectRole.Admin ||
+            initiatorRole == ProjectRole.Owner;
+    }
+
+    public bool CanDeleteTask(Project project, Guid? initiatorId, Models.Task task)
+    {
+        var initiatorRole = GetUserRole(project, initiatorId);
+        if (initiatorRole == null)
+            return false;
+
+        if (initiatorRole == ProjectRole.Owner)
+            return true;
+
+        if (initiatorRole == ProjectRole.Admin)
+            return true;
+
+        if (initiatorRole == ProjectRole.Member)
+        {
+            var member = project.Members.FirstOrDefault(m => m.UserId == initiatorId);
+            if (member == null)
+                return false;
+
+            return task.CreatorMemberId == member.Id;
+        }
+
+        return false;
+    }
+
     public bool CanRemoveMember(Project project, Guid? initiatorId, Guid? targetMemberId)
     {
         var initiatorRole = GetUserRole(project, initiatorId);

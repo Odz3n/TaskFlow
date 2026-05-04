@@ -4,7 +4,7 @@ namespace TaskFlow.Domain.Models;
 
 public class User : IdentityUser<Guid>
 {
-    private const string DefaultAvatarUrl = "TO BE ADDED";
+    private const string DefaultAvatarUrl = "uploads\\users\\default\\avatars\\default_avatar.jpg";
     public string FirstName { get; set; } = null!;
     public string LastName { get; set; } = null!;
     public string? AvatarUrl { get; set; }
@@ -12,8 +12,4 @@ public class User : IdentityUser<Guid>
     public string EffectiveAvatarUrl => AvatarUrl ?? DefaultAvatarUrl;
 
     public ICollection<Member> Memberships { get; set; } = new List<Member>();
-    public Guid GetUserId()
-    {
-        return Id;
-    }
 }

@@ -10,5 +10,5 @@ public record RegisterCommand(
     string Email,
     string Password,
     string ConfirmPassword,
-    string? AvatarUrl
+    IFormFile? Avatar
 ) : ICommand<RegisterResponse>;

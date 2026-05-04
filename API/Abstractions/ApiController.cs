@@ -52,7 +52,8 @@ public abstract class ApiController : ControllerBase
             Instance = HttpContext.Request.Path,
             Extensions =
             {
-                ["errorCode"] = result.Error.Code
+                ["errorCode"] = result.Error.Code,
+                ["errorDescription"] = result.Error.Description
             }
         };
 

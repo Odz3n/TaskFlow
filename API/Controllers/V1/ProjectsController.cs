@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using TaskFlow.API.Abstractions;
 using TaskFlow.Application.DTOs.Requests;
 using TaskFlow.Application.Extensions;
-using TaskFlow.Application.Features.Projects;
 using TaskFlow.Application.Features.Projects.Commands;
 using TaskFlow.Application.Features.Projects.Queries;
 

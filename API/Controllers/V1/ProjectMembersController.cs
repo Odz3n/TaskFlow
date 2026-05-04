@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using TaskFlow.API.Abstractions;
 using TaskFlow.Application.Features.Members.Queries;
 using TaskFlow.Application.Features.Members.Commands;
+using TaskFlow.Application.DTOs.Member;
 
 namespace TaskFlow.API.Controllers.V1;
 
@@ -55,5 +56,18 @@ public class ProjectMembersController : ApiController
         if (result.IsFailure)
             return HandleFailure(result);
         return Ok(result);
+    }
+    [HttpGet]
+    public async Task<IActionResult> GetMembers(
+        Guid projectId,
+        [FromQuery] MemberGetParameters parameters,
+        CancellationToken cancellationToken
+    )
+    {
+        var query = new GetMembersQuery(projectId, parameters);
+        var result = await _sender.Send(query, cancellationToken);
+        if (result.IsFailure)
+            return HandleFailure(result);
+        return Ok(result.Data);
     }
 }
