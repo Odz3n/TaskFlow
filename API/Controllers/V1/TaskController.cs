@@ -30,12 +30,6 @@ public class TaskController : ApiController
         CancellationToken cancellationToken
     )
     {
-        Console.WriteLine("\n\n\n");
-        
-        Console.WriteLine(User.GetUserId());
-        
-        Console.WriteLine("\n\n\n");
-
         var command = new CreateTaskCommand(
             Title: request.Title,
             Description: request.Description,

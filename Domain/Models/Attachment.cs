@@ -9,7 +9,7 @@ public class Attachment
 
     public string? FileName { get; set; }
     public string? FilePath { get; set; }
-    public int FileSize { get; set; }
+    public long FileSize { get; set; }
 
     public Guid? MemberId { get; set; }
     public Member? Member { get; set; }

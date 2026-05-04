@@ -24,12 +24,23 @@ public class ProjectPermissionService : IProjectPermissionService
         return false;
     }
 
+    public bool CanCreateAttachment(Project project, Guid? initiatorId)
+    {
+        var initiatorRole = GetUserRole(project, initiatorId);
+        if (initiatorRole == null)
+            return false;
+
+        return initiatorRole == ProjectRole.Owner ||
+               initiatorRole == ProjectRole.Admin ||
+               initiatorRole == ProjectRole.Member;
+    }
+
     public bool CanCreateTask(Project project, Guid? initiatorId)
     {
         var initiatorRole = GetUserRole(project, initiatorId);
         if (initiatorRole == null)
             return false;
-            
+
         return initiatorRole == ProjectRole.Member ||
             initiatorRole == ProjectRole.Admin ||
             initiatorRole == ProjectRole.Owner;
