@@ -2,5 +2,7 @@ namespace TaskFlow.Domain.Enums;
 
 public enum ContentType
 {
-    Users
+    Users,
+    Tasks,
+    Comments
 }

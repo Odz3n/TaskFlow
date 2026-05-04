@@ -6,5 +6,6 @@ public enum SubContentType
     Photos,
     Samples,
     Thumbnails,
-    Avatars
+    Avatars,
+    Attachments
 }

@@ -86,4 +86,32 @@ public class ProjectPermissionService : IProjectPermissionService
         return project.Members
             .FirstOrDefault(m => m.UserId == userId)?.Role;
     }
+
+    public bool CanAddComment(Project project, Guid? initiatorId)
+    {
+        // Anyone who is a member (even a Viewer) can usually comment, 
+        // but we can restrict it if needed. For now, any member.
+        return GetUserRole(project, initiatorId) != null;
+    }
+
+    public bool CanUpdateComment(Project project, Guid? initiatorId, Comment comment)
+    {
+        // Only the author can update their comment.
+        var member = project.Members.FirstOrDefault(m => m.UserId == initiatorId);
+        return member != null && comment.MemberId == member.Id;
+    }
+
+    public bool CanDeleteComment(Project project, Guid? initiatorId, Comment comment)
+    {
+        var initiatorRole = GetUserRole(project, initiatorId);
+        if (initiatorRole == null) return false;
+
+        // Owner or Admin can delete any comment.
+        if (initiatorRole == ProjectRole.Owner || initiatorRole == ProjectRole.Admin)
+            return true;
+
+        // Author can delete their own comment.
+        var member = project.Members.FirstOrDefault(m => m.UserId == initiatorId);
+        return member != null && comment.MemberId == member.Id;
+    }
 }
