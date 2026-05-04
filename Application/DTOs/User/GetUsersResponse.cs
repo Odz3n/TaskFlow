@@ -1,4 +1,4 @@
-namespace TaskFlow.Application.DTOs.Responses;
+namespace TaskFlow.Application.DTOs.User;
 
 public record GetUsersResponse(
     Guid Id,

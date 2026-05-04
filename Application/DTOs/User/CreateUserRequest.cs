@@ -1,4 +1,4 @@
-namespace TaskFlow.Application.DTOs.Requests;
+namespace TaskFlow.Application.DTOs.User;
 
 public record CreateUserRequest(
     string UserName,

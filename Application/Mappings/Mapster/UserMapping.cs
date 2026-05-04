@@ -1,7 +1,7 @@
 using Mapster;
 using TaskFlow.Domain.Models;
 using TaskFlow.Application.DTOs.User;
-using TaskFlow.Application.DTOs.Responses;
+using TaskFlow.Application.DTOs.Auth;
 
 namespace TaskFlow.Application.Mappings.Mapster;
 

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Http;
 
-namespace TaskFlow.Application.DTOs.Requests;
+namespace TaskFlow.Application.DTOs.Comment;
 
 public record CreateCommentRequest(
     string Text,

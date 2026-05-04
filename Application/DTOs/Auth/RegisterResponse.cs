@@ -1,4 +1,4 @@
-namespace TaskFlow.Application.DTOs.Responses;
+namespace TaskFlow.Application.DTOs.Auth;
 
 public record RegisterResponse(
     Guid Id,

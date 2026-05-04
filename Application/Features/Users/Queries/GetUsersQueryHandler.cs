@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Identity;
 using TaskFlow.Application.Common;
-using TaskFlow.Application.DTOs.Responses;
+using TaskFlow.Application.DTOs.User;
 using TaskFlow.Application.Extensions;
 using TaskFlow.Application.Interfaces.Messaging;
 using TaskFlow.Domain.Models;

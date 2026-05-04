@@ -1,7 +1,7 @@
 using Mapster;
 using Microsoft.AspNetCore.Identity;
 using TaskFlow.Application.Common;
-using TaskFlow.Application.DTOs.Responses;
+using TaskFlow.Application.DTOs.Auth;
 using TaskFlow.Application.Interfaces.Messaging;
 using TaskFlow.Application.Interfaces.Services;
 using TaskFlow.Domain.Enums;
