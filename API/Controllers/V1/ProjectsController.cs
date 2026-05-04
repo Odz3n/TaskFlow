@@ -56,5 +56,59 @@ namespace MyApp.Namespace
                 return HandleFailure(result);
             return Ok(result);
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProjectById(
+            Guid id,
+            CancellationToken ct
+        )
+        {
+            var query = new GetProjectByIdQuery(id);
+            var result = await _sender.Send(query, ct);
+            
+            if (result.IsFailure)
+                return HandleFailure(result);
+            return Ok(result.Data);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProject(
+            Guid id,
+            [FromBody] UpdateProjectRequest request,
+            CancellationToken ct
+        )
+        {
+            var command = new UpdateProjectCommand(
+                Id: id,
+                InitiatorId: User.GetUserId(),
+                Name: request.Name,
+                Description: request.Description,
+                IsArchived: request.IsArchived
+            );
+
+            var result = await _sender.Send(command, ct);
+            
+            if (result.IsFailure)
+                return HandleFailure(result);
+            return Ok(result.Data);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProject(
+            Guid id,
+            CancellationToken ct
+        )
+        {
+            var command = new DeleteProjectCommand(
+                Id: id,
+                InitiatorId: User.GetUserId()
+            );
+
+            var result = await _sender.Send(command, ct);
+            
+            if (result.IsFailure)
+                return HandleFailure(result);
+            return NoContent();
+        }
     }
 }

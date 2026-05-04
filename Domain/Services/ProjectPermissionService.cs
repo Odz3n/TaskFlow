@@ -97,4 +97,28 @@ public class ProjectPermissionService : IProjectPermissionService
         return project.Members
             .FirstOrDefault(m => m.UserId == userId)?.Role;
     }
+
+    public bool CanAddComment(Project project, Guid? initiatorId)
+    {
+  
+        return GetUserRole(project, initiatorId) != null;
+    }
+
+    public bool CanUpdateComment(Project project, Guid? initiatorId, Comment comment)
+    {
+        var member = project.Members.FirstOrDefault(m => m.UserId == initiatorId);
+        return member != null && comment.MemberId == member.Id;
+    }
+
+    public bool CanDeleteComment(Project project, Guid? initiatorId, Comment comment)
+    {
+        var initiatorRole = GetUserRole(project, initiatorId);
+        if (initiatorRole == null) return false;
+
+        if (initiatorRole == ProjectRole.Owner || initiatorRole == ProjectRole.Admin)
+            return true;
+
+        var member = project.Members.FirstOrDefault(m => m.UserId == initiatorId);
+        return member != null && comment.MemberId == member.Id;
+    }
 }

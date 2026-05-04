@@ -11,4 +11,8 @@ public interface IProjectPermissionService
     bool CanCreateAttachment(Project project, Guid? initiatorId);
     bool CanRemoveMember(Project project, Guid? initiatorId, Guid? targetMemberId);
     bool CanChangeMemberRole(Project project, Guid? initiatorId, Guid? targetMemberId, ProjectRole role);
+    
+    bool CanAddComment(Project project, Guid? initiatorId);
+    bool CanUpdateComment(Project project, Guid? initiatorId, Comment comment);
+    bool CanDeleteComment(Project project, Guid? initiatorId, Comment comment);
 }
