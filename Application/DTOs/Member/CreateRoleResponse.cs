@@ -1,4 +1,4 @@
-namespace TaskFlow.Application.DTOs.Responses.Roles;
+namespace TaskFlow.Application.DTOs.Member;
 
 public record CreateRoleResponse(
     string Message

@@ -15,5 +15,8 @@ public class CreateCommentCommandValidator : AbstractValidator<CreateCommentComm
         RuleFor(x => x.Text)
             .NotEmpty().WithMessage("Comment text is required.")
             .MaximumLength(1000).WithMessage("Comment must not exceed 1000 characters.");
+
+        RuleFor(x => x.File)
+            .Must(f => f == null || f.Length > 0).WithMessage("Uploaded file cannot be empty.");
     }
 }

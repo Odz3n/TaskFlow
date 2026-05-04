@@ -1,4 +1,4 @@
-namespace TaskFlow.Application.DTOs.Requests;
+namespace TaskFlow.Application.DTOs.Project;
 
 public record CreateProjectRequest(
     string Name,

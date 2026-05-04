@@ -1,4 +1,4 @@
-using TaskFlow.Application.DTOs.Responses;
+using TaskFlow.Application.DTOs.Auth;
 using TaskFlow.Application.Interfaces.Messaging;
 
 namespace TaskFlow.Application.Features.Auth.Commands.Register;
