@@ -10,6 +10,9 @@ using TaskFlow.Application.Features.Tasks.Queries;
 
 namespace TaskFlow.API.Controllers.V1;
 
+/// <summary>
+/// Controller for managing tasks within projects.
+/// </summary>
 [Authorize]
 [ApiVersion(1.0)]
 [ApiController]
@@ -23,6 +26,13 @@ public class TaskController : ApiController
     {
         _sender = sender;
     }
+    /// <summary>
+    /// Creates a new task in a project.
+    /// </summary>
+    /// <param name="projectId">The unique identifier of the project.</param>
+    /// <param name="request">The task creation request data.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The created task details.</returns>
     [HttpPost]
     public async Task<IActionResult> CreateTask(
         Guid projectId,
@@ -46,6 +56,13 @@ public class TaskController : ApiController
         return Ok(result.Data);
     }
 
+    /// <summary>
+    /// Deletes a task from a project by its ID.
+    /// </summary>
+    /// <param name="projectId">The unique identifier of the project.</param>
+    /// <param name="taskId">The unique identifier of the task to delete.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The result of the deletion.</returns>
     [HttpDelete("{taskId:Guid}")]
     public async Task<IActionResult> DeleteById(
         Guid projectId,
@@ -64,6 +81,13 @@ public class TaskController : ApiController
             return HandleFailure(result);
         return Ok(result.Data);
     }
+    /// <summary>
+    /// Retrieves a specific task by its ID within a project.
+    /// </summary>
+    /// <param name="taskId">The unique identifier of the task.</param>
+    /// <param name="projectId">The unique identifier of the project.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The task details if found.</returns>
     [HttpGet("{taskId:Guid}")]
     public async Task<IActionResult> GetTaskById(
         Guid taskId,
@@ -81,6 +105,13 @@ public class TaskController : ApiController
             return HandleFailure(result);
         return Ok(result.Data);
     }
+    /// <summary>
+    /// Retrieves a paged list of tasks for a project based on query parameters.
+    /// </summary>
+    /// <param name="projectId">The unique identifier of the project.</param>
+    /// <param name="parameters">The search and paging parameters.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A paged list of tasks.</returns>
     [HttpGet]
     public async Task<IActionResult> GetTasksByParameters(
         Guid projectId,
@@ -96,6 +127,14 @@ public class TaskController : ApiController
             return HandleFailure(result);
         return Ok(result.Data);
     }
+    /// <summary>
+    /// Updates an existing task's information.
+    /// </summary>
+    /// <param name="projectId">The unique identifier of the project.</param>
+    /// <param name="taskId">The unique identifier of the task to update.</param>
+    /// <param name="request">The task update data.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The updated task details.</returns>
     [HttpPut("{taskId:guid}")]
     public async Task<IActionResult> Update(
         Guid projectId,
@@ -119,6 +158,14 @@ public class TaskController : ApiController
             return HandleFailure(result);
         return Ok(result.Data);
     }
+    /// <summary>
+    /// Partially updates a task (e.g., changes its status).
+    /// </summary>
+    /// <param name="projectId">The unique identifier of the project.</param>
+    /// <param name="taskId">The unique identifier of the task.</param>
+    /// <param name="request">The partial update data (e.g., Status).</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The updated task details.</returns>
     [HttpPatch("{taskId:guid}/status")]
     public async Task<IActionResult> UpdateStatus(
         Guid projectId,
